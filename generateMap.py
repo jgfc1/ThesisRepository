@@ -1,7 +1,10 @@
 """
-    Author: "Javier Gombao"
+    Author: "Javier Gombao Fernandez-Calvillo"
+    eMail: a00248414@student.ait.ie
+    College: Athlone Institute of Technology (AIT)
+    Subject: Final Project
     File: generateMap.py
-
+    
     The purpose of this script is to obtain all the names of the countries which IntelMQ has detected as a cyber threat
     Variables (lists):
     nameCountries: it provides the name if the country. Examples: Ireland, Spain, England, France...
@@ -10,15 +13,20 @@
     longitude: it defines the longitude value
 """
 
+# Import modules
 import folium
 import pandas as pd
 
-
+# Variables which we are going to use in the program
+FILEOUTPUT = "output.txt"
 countriesCount = []
 nameCountries =[]
 values = []
 latitude = []
 longitude = []
+
+# Set ipython's max row display
+pd.set_option('display.max_row', 245)
 
 """This is a struct which defines the code of the country and its ocurrences"""
 class Struct():
@@ -99,18 +107,23 @@ class generateMap(object):
     """This function makes a data frame with points to show on the map"""
     def loadData(self):
         data = pd.DataFrame({
-            'lat':latitude,
-            'lon':longitude,
             'name':nameCountries,
-            'value':values
+            'value':values,
+            'lat':latitude,
+            'lon':longitude
         })
         return data
 
     """It generates the map itself with the bubblets around it"""
     def createMap(self):
         data = self.loadData()
-        print(data)
-        # Make an empty map
+        #In the file output we can see the country, the ocurrences and the values of latitude and longitude
+        file = open(FILEOUTPUT,"w")
+        file.write(str(data))
+        
+        print("Loading the map...")
+        
+        # It does an empty map
         m = folium.Map(location=[0, 0], tiles="Mapbox Bright", zoom_start=2)
 
         # We will add markers on the map
