@@ -6,6 +6,9 @@
 
 """
 
+countriesCount = []
+itemsMap = []
+
 class Struct():
     def __init__(self, country, count):
         self.country = country
@@ -13,12 +16,17 @@ class Struct():
 
 class generateMap(object):
 
-    def __init__(self, fileInput):
-        self._fileInput=fileInput
+    def __init__(self, fileEvents, fileCodeISOCountries):
+        self._fileEvents=fileEvents
+        self._fileCodeISOCountries=fileCodeISOCountries
 
-    def getFileInput(self):
+    def getFileEvents(self):
         """Returns the fileInput."""
-        return self._fileInput
+        return self._fileEvents
+
+    def getFileCodeISOCountries(self):
+        """Returns the fileInput."""
+        return self._fileCodeISOCountries
 
     def obtainDistinctCountries(self, listCounties):
         distinctCountries = []
@@ -40,11 +48,15 @@ class generateMap(object):
         for i in countriesCountList:
             print(i.country, i.count)
 
+    def printItemsMap(self, itemsMapList):
+        for i in itemsMap:
+            print(i.country, i.count)
+
     def getOcurrencesCountry(self):
         search_name = "source.geolocation.cc"
         country_list = []
         try:
-            with open(self.getFileInput()) as attacks:
+            with open(self.getFileEvents()) as attacks:
                 for attack in attacks:
                     """we comprobate that there is a geolocation available in the line"""
                     if search_name in attack:
@@ -65,40 +77,46 @@ class generateMap(object):
 
             distinct_countries = self.obtainDistinctCountries(country_list)
 
-            countriesCount = []
             for c in distinct_countries:
                 countriesCount.append(Struct(c, self.countCountries(c, country_list)))
 
-            self.printCountriesCount(countriesCount)
-
 
         except Exception:
             print("Error: File not found.")
 
 
-"""
-    def readFile(self):
-        search_name = "source.geolocation.cc"
+    def obtainLongitudeLatitude(self):
+
         try:
-            with open(self.getFileInput()) as attacks:
-                for attack in attacks:
-                    if search_name in attack:
-                        attributes = attack.split(", ")
-                        i = 0
-                        while i < len(attributes):
-                            g = attributes[i].split(": ")
-                            for a in g:
-                                if "\"source.geolocation.cc\""  == a:
-                                    temp = len(g[1])
-                                    s1 = g[1][:temp - 1]
-                                    s2 = s1[1:]
-                                    print(s2)
+            with open(self.getFileCodeISOCountries()) as lines:
+                for line in lines:
+                    attributes = line.split(",")
+                    temp = len(attributes[0])
+                    s1 = attributes[0][:temp - 1]
+                    code = s1[1:]
+                    lat = attributes[1]
+                    lon = attributes[2]
+                    temp_aux = len(attributes[3])
+                    a = attributes[3][:temp_aux - 2]
+                    name = a[1:]
 
-                            i += 1
+                    i = 0
+                    while i < len(countriesCount):
+                        if code == countriesCount[i].country:
+                            print("----------")
+                            print(countriesCount[i].count)
+                            print(countriesCount[i].country)
+                            print(name)
+                            print(lon)
+                            print(lat)
+
+                        i += 1
+
+            self.printItemsMap(itemsMap)
+
         except Exception:
             print("Error: File not found.")
-"""
 
-s = generateMap("events.txt")
+s = generateMap("events.txt", "iso3166-1-alpha-2.txt")
 s.getOcurrencesCountry()
-
+s.obtainLongitudeLatitude()
