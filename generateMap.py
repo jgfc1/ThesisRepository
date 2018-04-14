@@ -3,35 +3,45 @@
     File: generateMap.py
 
     The purpose of this script is to obtain all the names of the countries which IntelMQ has detected as a cyber threat
-
+    Variables (lists):
+    nameCountries: it provides the name if the country. Examples: Ireland, Spain, England, France...
+    values: it defines the number of times which the country apperars in the result file given by IntelMQ
+    latitude: it defines the latitude value
+    longitude: it defines the longitude value
 """
+
+import folium
+import pandas as pd
+
 
 countriesCount = []
 nameCountries =[]
-value = []
+values = []
 latitude = []
 longitude = []
 
-
+"""This is a struct which defines the code of the country and its ocurrences"""
 class Struct():
     def __init__(self, country, count):
         self.country = country
         self.count = count
 
 class generateMap(object):
-
+    
+    """Constructor of the function"""
     def __init__(self, fileEvents, fileCodeISOCountries):
         self._fileEvents=fileEvents
         self._fileCodeISOCountries=fileCodeISOCountries
-
+    
+    """It returns the name of the fileEvents"""
     def getFileEvents(self):
-        """Returns the fileInput."""
         return self._fileEvents
-
+    
+    """It gets the file with the name of the countries and their longitude and latitude (geolocation)"""
     def getFileCodeISOCountries(self):
-        """Returns the fileInput."""
         return self._fileCodeISOCountries
-
+    
+    """It eliminates duplicates from the list of the countries"""
     def obtainDistinctCountries(self, listCounties):
         distinctCountries = []
         times = 0
@@ -39,36 +49,34 @@ class generateMap(object):
             if i not in distinctCountries:
                 distinctCountries.append(i)
         return distinctCountries
-
-
+    
+    """This function will count the countries from the list"""
     def countCountries(self, country, listCounties):
         times = 0
         for i in listCounties:
             if country == i:
                 times += 1
         return times
-
+    
+    """This function will print the name of the countries and its ocurrence"""
     def printCountriesCount(self, countriesCountList):
         for i in countriesCountList:
             print(i.country, i.count)
 
-    def printItemsMap(self, itemsMapList):
-        for i in itemsMap:
-            print(i.country, i.count)
-
+    """This function will count the ocurrences that the program read from the file events.txt"""
     def getOcurrencesCountry(self):
         search_name = "source.geolocation.cc"
         country_list = []
         try:
             with open(self.getFileEvents()) as attacks:
                 for attack in attacks:
-                    """we comprobate that there is a geolocation available in the line"""
+                    # We comprobate that there is a geolocation available in the line
                     if search_name in attack:
                         attributes = attack.split(", ")
                         i = 0
                         while i < len(attributes):
                             g = attributes[i].split(": ")
-                            """We are looking for the attribute "source.location in each line: """
+                            #We are looking for the attribute "source.location.cc in each line:
                             for a in g:
                                 if "\"source.geolocation.cc\""  == a:
                                     """We obtain the code of the country: """
@@ -80,17 +88,47 @@ class generateMap(object):
                             i += 1
 
             distinct_countries = self.obtainDistinctCountries(country_list)
-
+            
+            #We insert the countries and its ocurrence in the class 'Struct'
             for c in distinct_countries:
                 countriesCount.append(Struct(c, self.countCountries(c, country_list)))
-
 
         except Exception:
             print("Error: File not found.")
 
+    """This function makes a data frame with points to show on the map"""
+    def loadData(self):
+        data = pd.DataFrame({
+            'lat':latitude,
+            'lon':longitude,
+            'name':nameCountries,
+            'value':values
+        })
+        return data
 
+    """It generates the map itself with the bubblets around it"""
+    def createMap(self):
+        data = self.loadData()
+        print(data)
+        # Make an empty map
+        m = folium.Map(location=[0, 0], tiles="Mapbox Bright", zoom_start=2)
+
+        # We will add markers on the map
+        for i in range(0, len(data)):
+            folium.Circle(
+                location=[data.iloc[i]['lon'], data.iloc[i]['lat']],
+                popup=data.iloc[i]['name'],
+                radius=data.iloc[i]['value'] * 1500.5,
+                color='crimson',
+                fill=True,
+                fill_color='crimson'
+            ).add_to(m)
+
+        # Save it as html
+        m.save('mymap.html')
+
+    """It obtains the longitude and latitude using the file iso3166-1-alpha-2.txt"""
     def obtainLongitudeLatitude(self):
-
         try:
             with open(self.getFileCodeISOCountries()) as lines:
                 for line in lines:
@@ -98,22 +136,21 @@ class generateMap(object):
                     temp = len(attributes[0])
                     s1 = attributes[0][:temp - 1]
                     code = s1[1:]
-                    lat = attributes[1]
-                    lon = attributes[2]
+                    lon = attributes[1]
+                    lat = attributes[2]
                     temp_aux = len(attributes[3])
                     a = attributes[3][:temp_aux - 2]
                     name = a[1:]
-
+                    
+                    # We insert the data on the lists
                     i = 0
                     while i < len(countriesCount):
                         if code == countriesCount[i].country:
                             nameCountries.append(name)
-                            value.append(countriesCount[i].count)
-                            latitude.append(lat)
-                            longitude.append(lon)
-
+                            values.append(int(countriesCount[i].count))
+                            longitude.append(float(lon))
+                            latitude.append(float(lat))
                         i += 1
-
 
         except Exception:
             print("Error: File not found.")
@@ -121,3 +158,4 @@ class generateMap(object):
 s = generateMap("events.txt", "iso3166-1-alpha-2.txt")
 s.getOcurrencesCountry()
 s.obtainLongitudeLatitude()
+s.createMap()
