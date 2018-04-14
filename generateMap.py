@@ -7,7 +7,11 @@
 """
 
 countriesCount = []
-itemsMap = []
+nameCountries =[]
+value = []
+latitude = []
+longitude = []
+
 
 class Struct():
     def __init__(self, country, count):
@@ -103,16 +107,13 @@ class generateMap(object):
                     i = 0
                     while i < len(countriesCount):
                         if code == countriesCount[i].country:
-                            print("----------")
-                            print(countriesCount[i].count)
-                            print(countriesCount[i].country)
-                            print(name)
-                            print(lon)
-                            print(lat)
+                            nameCountries.append(name)
+                            value.append(countriesCount[i].count)
+                            latitude.append(lat)
+                            longitude.append(lon)
 
                         i += 1
 
-            self.printItemsMap(itemsMap)
 
         except Exception:
             print("Error: File not found.")
