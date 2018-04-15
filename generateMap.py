@@ -16,6 +16,7 @@
 # Import modules
 import folium
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Variables which we are going to use in the program
 FILEOUTPUT = "output.txt"
@@ -108,19 +109,22 @@ class generateMap(object):
     def loadData(self):
         data = pd.DataFrame({
             'name':nameCountries,
-            'value':values,
+            'nº attacks':values,
             'lat':latitude,
             'lon':longitude
         })
+        data
         return data
 
     """It generates the map itself with the bubblets around it"""
     def createMap(self):
-        data = self.loadData()
+        # Sort the dataframe’s rows by reports, in descending order:
+        data = self.loadData().sort_values(by='nº attacks', ascending=0)
+
         #In the file output we can see the country, the ocurrences and the values of latitude and longitude
         file = open(FILEOUTPUT,"w")
         file.write(str(data))
-        
+
         print("Loading the map...")
         
         # It does an empty map
@@ -131,7 +135,7 @@ class generateMap(object):
             folium.Circle(
                 location=[data.iloc[i]['lon'], data.iloc[i]['lat']],
                 popup=data.iloc[i]['name'],
-                radius=data.iloc[i]['value'] * 50.5,
+                radius=data.iloc[i]['nº attacks'] * 50.5,
                 color='crimson',
                 fill=True,
                 fill_color='crimson'
