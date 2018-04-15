@@ -20,6 +20,9 @@ import pandas as pd
 classificationTaxonomyCount = []
 FILEOUTPUT = "output_classification_malware.txt"
 
+# We configure the size of the table to show in the fileoutput
+pd.set_option('display.max_row', 900)
+
 
 class Struct():
     def __init__(self, taxonomy, count):
