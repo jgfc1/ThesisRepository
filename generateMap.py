@@ -131,7 +131,7 @@ class generateMap(object):
             folium.Circle(
                 location=[data.iloc[i]['lon'], data.iloc[i]['lat']],
                 popup=data.iloc[i]['name'],
-                radius=data.iloc[i]['value'] * 1500.5,
+                radius=data.iloc[i]['value'] * 50.5,
                 color='crimson',
                 fill=True,
                 fill_color='crimson'
