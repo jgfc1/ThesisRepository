@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 
 # Variables which we are going to use in the program
 FILEOUTPUT = "output.txt"
-countriesCount = []
+countries = []
 nameCountries =[]
 values = []
 latitude = []
@@ -30,12 +30,14 @@ longitude = []
 pd.set_option('display.max_row', 245)
 
 """This is a struct which defines the code of the country and its ocurrences"""
-class Struct():
+class Country():
     def __init__(self, country, count):
         self.country = country
         self.count = count
+        self.latitude = latitude
+        self.longitude = longitude
 
-class generateMap(object):
+class Map(object):
     
     """Constructor of the function"""
     def __init__(self, fileEvents, fileCodeISOCountries):
@@ -100,7 +102,7 @@ class generateMap(object):
             
             #We insert the countries and its ocurrence in the class 'Struct'
             for c in distinct_countries:
-                countriesCount.append(Struct(c, self.countCountries(c, country_list)))
+                countries.append(Country(c, self.countCountries(c, country_list)))
 
         except Exception:
             print("Error: File not found.")
@@ -161,10 +163,10 @@ class generateMap(object):
                     
                     # We insert the data on the lists
                     i = 0
-                    while i < len(countriesCount):
-                        if code == countriesCount[i].country:
+                    while i < len(countries):
+                        if code == countries[i].country:
                             nameCountries.append(name)
-                            values.append(int(countriesCount[i].count))
+                            values.append(int(countries[i].count))
                             longitude.append(float(lon))
                             latitude.append(float(lat))
                         i += 1
@@ -172,7 +174,7 @@ class generateMap(object):
         except Exception:
             print("Error: File not found.")
 
-s = generateMap("events.txt", "iso3166-1-alpha-2.txt")
+s = Map("events.txt", "iso3166-1-alpha-2.txt")
 s.getOcurrencesCountry()
 s.obtainLongitudeLatitude()
 s.createMap()

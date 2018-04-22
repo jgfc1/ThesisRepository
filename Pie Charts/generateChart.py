@@ -29,6 +29,13 @@ class Struct():
         self.taxonomy = taxonomy
         self.count = count
 
+    def getTaxonomy(self):
+        return self.taxonomy
+
+    def getCount(self):
+        return self.count
+
+
 class generateChart(object):
     """Constructor of the function"""
 
@@ -36,7 +43,6 @@ class generateChart(object):
         self._fileEvents = fileEvents
 
     """It returns the name of the fileEvents"""
-
     def getFileEvents(self):
         return self._fileEvents
 
