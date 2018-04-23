@@ -5,5 +5,7 @@
 ![alt text](http://1.bp.blogspot.com/-TJJfXraVCKc/WtPfFWriIWI/AAAAAAAABqI/BxBs9oMCafEsm4JOKcIxqavjX-NNwvgAgCK4BGAYYCw/s1600/classification-type.jpeg)
 
 # Top 10 Malware
-File: output_classification_malware.txt
 ![alt text](http://4.bp.blogspot.com/-rEiXvkkbGMo/WtPgws0gizI/AAAAAAAABqU/17ImuXhvlDwz8t3PWrR1qMr3xWe4GeW0wCK4BGAYYCw/s1600/Top10Malware.jpeg)
+
+# Target (organization) of the attacks
+![alt text](http://4.bp.blogspot.com/-SebSMvbIs_E/Wt3amp3uRJI/AAAAAAAABrc/lZIMSuGhQ2EZp9-Svhta_GID-knSSbYVQCK4BGAYYCw/s1600/Event_description.jpeg)
