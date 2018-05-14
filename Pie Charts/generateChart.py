@@ -13,6 +13,7 @@
 """
 
 # Import modules
+import sys
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -138,5 +139,5 @@ class generateChart(object):
             plt.show()
 
 s = generateChart("events.txt")
-s.getOcurrences("event_description.text")
+s.getOcurrences(str(sys.argv[1]))
 s.createChart()
